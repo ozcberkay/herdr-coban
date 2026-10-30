@@ -20,6 +20,8 @@ A mod is a piece you add to your layout, not a whole window.
 | --- | --- |
 | [Tab notes](tab-notes/) | a markdown note per tab, beside its terminals, gone when the tab closes |
 
+[![Tab notes](tab-notes/preview.png)](tab-notes/)
+
 Browse them at [herdr.dev/mods](https://herdr.dev/mods).
 
 ## Install
