@@ -24,10 +24,15 @@ Browse them at [herdr.dev/mods](https://herdr.dev/mods).
 
 ## Install
 
-Ask your coding agent to add `https://github.com/ozcberkay/herdr-coban/tree/main/tab-notes`.
-Herdr's `~/.config/herdr-app/AGENTS.md` tells it how: read the recipe and the
-files, copy `mods/tab-notes/` to `~/.config/herdr-app/mods/`, put it in a
-layout of yours and run `herdr-app check`.
+Tell your coding agent:
+
+```
+Read ~/.config/herdr-app/AGENTS.md, then add this mod: https://github.com/ozcberkay/herdr-coban/tree/main/tab-notes
+```
+
+Herdr's `AGENTS.md` tells it how: read the recipe and the files, copy
+`mods/tab-notes/` to `~/.config/herdr-app/mods/`, put it in a layout of yours
+and run `herdr-app check`.
 
 To update, replace the mod folder with the new one. Your notes are kept.
 
