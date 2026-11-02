@@ -58,7 +58,7 @@ data are kept.
 
 ## Development
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). In short: `node --test tests/`, and
+See [CONTRIBUTING.md](CONTRIBUTING.md). In short: `node --test tests/*.test.mjs`, and
 `scripts/sync-layout-mods.sh` after you change a mod that the layout uses.
 
 ## Credits
