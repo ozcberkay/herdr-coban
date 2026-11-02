@@ -10,7 +10,7 @@
 # copy goes only after the new one is complete, and only from a path that this
 # script built from its own fixed list.
 set -eu
-root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd -P)
+root=$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd -P)
 layout_mods="$root/herdr-coban/mods"
 mods="tab-notes machine-vitals claude-status"
 
