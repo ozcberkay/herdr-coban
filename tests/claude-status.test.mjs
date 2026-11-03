@@ -1,7 +1,7 @@
-import { test } from "node:test";
+import { test, after } from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, readFileSync, existsSync } from "node:fs";
+import { mkdtempSync, readFileSync, readdirSync, existsSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -65,11 +65,19 @@ test("shortPath and safeId", () => {
   assert.equal(safeId("../x"), false);
 });
 
+const homes = [];
+const fresh = () => {
+  const home = mkdtempSync(join(tmpdir(), "claude-status-"));
+  homes.push(home);
+  return home;
+};
+after(() => homes.forEach((home) => rmSync(home, { recursive: true, force: true })));
+
 const run = (home, input, env = {}, args = ["cat"]) =>
   execFileSync("sh", [SCRIPT, ...args], { input, env: { PATH: process.env.PATH, HOME: home, HERDR_APP_HOME: home, ...env } }).toString();
 
 test("statusline.sh passes the status line through and keeps the data", () => {
-  const home = mkdtempSync(join(tmpdir(), "claude-status-"));
+  const home = fresh();
   const input = '{"model":{"display_name":"Opus"},"rate_limits":{"five_hour":{"used_percentage":46,"resets_at":1}}}';
   const out = run(home, input, { HC_TERMINAL_ID: "t7" }, ["sh", "-c", "cat >/dev/null; printf '\\033[38;5;108m[REVIEW]\\033[0m'"]);
   assert.equal(out, "\x1b[38;5;108m[REVIEW]\x1b[0m\n");
@@ -81,11 +89,24 @@ test("statusline.sh passes the status line through and keeps the data", () => {
 });
 
 test("statusline.sh keeps the old limits for input without them, and refuses unsafe ids", () => {
-  const home = mkdtempSync(join(tmpdir(), "claude-status-"));
+  const home = fresh();
   run(home, '{"rate_limits":{"five_hour":{"used_percentage":5,"resets_at":1}}}');
   run(home, '{"model":{}}', { HC_TERMINAL_ID: "../evil" });
   assert.equal(JSON.parse(readFileSync(join(home, "claude-status/limits.json"), "utf8")).input.rate_limits.five_hour.used_percentage, 5);
-  assert.equal(existsSync(join(home, "evil.json")), false);
+  assert.equal(existsSync(join(home, "claude-status/evil.json")), false);
+  assert.deepEqual(readdirSync(join(home, "claude-status/sessions")), []);
+});
+
+test("statusline.sh runs a one-string command with sh -c", () => {
+  const home = fresh();
+  const out = run(home, '{"model":{"display_name":"Opus"}}', {}, ['input=$(cat); NAME=x; echo "$input" | grep -o Opus; echo $NAME']);
+  assert.equal(out, "Opus\nx\n");
+});
+
+test("statusline.sh writes nothing for input that is not a JSON object", () => {
+  const home = fresh();
+  assert.equal(run(home, "", { HC_TERMINAL_ID: "t4" }), "");
+  assert.equal(existsSync(join(home, "claude-status")), false);
 });
 
 test("statusline.sh never fails the status line", () => {
@@ -94,7 +115,7 @@ test("statusline.sh never fails the status line", () => {
 });
 
 test("statusline.sh --hide-in-herdr prints nothing in Herdr and keeps the line", () => {
-  const home = mkdtempSync(join(tmpdir(), "claude-status-"));
+  const home = fresh();
   const inHerdr = run(home, '{"model":{}}', { HC_TERMINAL_ID: "t3" }, ["--hide-in-herdr", "sh", "-c", "cat >/dev/null; echo '[REVIEW]'"]);
   assert.equal(inHerdr, "");
   assert.equal(readFileSync(join(home, "claude-status/sessions/t3.line"), "utf8"), "[REVIEW]\n");

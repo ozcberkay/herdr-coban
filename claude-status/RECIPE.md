@@ -102,10 +102,12 @@ files next to it are one build of it.
   the pure helpers (no Herdr imports, so Node tests load it); `mod.json`
   (`{ "place": "none", "title": "Claude" }`); `statusline.sh`.
 - **`statusline.sh`**, a POSIX `sh` script that wraps the status line:
-  - It reads stdin, runs the command in its arguments with the same input
-    and prints that output. `--hide-in-herdr` as the first argument prints
+  - It reads stdin, runs the person's command with the same input and prints
+    that output. One argument runs with `sh -c "$1"`, so a command with pipes,
+    `$(...)` or `VAR=value` works; more arguments run as they are. `--hide-in-herdr` as the first argument prints
     nothing when `HC_TERMINAL_ID` is set (a Herdr terminal), so the status
     line moves into the panels there and stays as it was everywhere else.
+  - If the input does not start with `{`, it writes nothing.
   - If the input has `"rate_limits"`, it writes `{"at": <epoch s>, "input":
     <input>}` to `~/.config/herdr-app/claude-status/limits.json`.
   - If `HC_TERMINAL_ID` (the herdr-core address of the terminal) is only
@@ -119,11 +121,12 @@ files next to it are one build of it.
 
   ```json
   "statusLine": { "type": "command",
-    "command": "sh ~/.config/herdr-app/mods/claude-status/statusline.sh --hide-in-herdr <your earlier command>" }
+    "command": "sh ~/.config/herdr-app/mods/claude-status/statusline.sh --hide-in-herdr '<your earlier command>'" }
   ```
 
-  Keep the person's earlier status line command as the argument. With no
-  earlier command, leave it out.
+  Keep the person's earlier status line command as one single-quoted
+  argument. If it has a single quote in it, move it into a script file and
+  give `sh <that file>`. With no earlier command, leave the argument out.
 - **Input fields used**: `rate_limits.{five_hour,seven_day,spend_limit}`
   (`used_percentage`, `resets_at`, `used_usd`, `limit_usd`), `model`,
   `effort.level`, `fast_mode`, `session_name`, `workspace.current_dir`,
@@ -132,12 +135,24 @@ files next to it are one build of it.
 - **Herdr**: `readTextFile`, `fs/promises` (`readdir`, `unlink`), `focused()`
   and `panes()` for the shown tab's Claude Code pane (`app === "claude-code"`
   or `program.key === "claude"`), `terminals()` for the live addresses,
-  `run("layout.hide" | "layout.show" | "pane.focus")`, `layout()` for the rail.
+  `run("layout.hide" | "layout.show" | "pane.focus")`, `layout()` for the rail,
+  `exec("open", ["https://claude.ai/settings/usage"])` for a click on Limits.
 
 ## Watch out
 
-- It changes `~/.claude/settings.json`, outside Herdr's folder. Tell the person
-  before you install it, and keep their status line command as the argument.
+- It changes `~/.claude/settings.json`, outside Herdr's folder, and runs the
+  person's status line command. A click on Limits opens claude.ai in the
+  browser with `open`. Tell the person before you install it, and keep their
+  status line command as the argument.
+- Without the quotes, Claude Code's shell runs the parts of a command with
+  `;`, `|`, `$(...)` or `VAR=value` itself, before the wrapper gets them, and
+  the status line breaks.
+- `--hide-in-herdr` empties the status line in every Herdr terminal, in every
+  layout. In a layout without the panels, leave it out.
+- To uninstall, first set the `statusLine` command back to the quoted
+  argument, then delete the folders. If `statusline.sh` is missing, each
+  Claude Code response shows an error. To update, copy over the folder; do not
+  delete it first.
 - It writes outside its own folder: `~/.config/herdr-app/claude-status/`. Do
   not keep the data inside `mods/claude-status/`: a write there reloads the mod.
 - The data files hold the full status line input: the model, the folder, the
