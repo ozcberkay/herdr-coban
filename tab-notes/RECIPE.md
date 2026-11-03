@@ -97,7 +97,7 @@ want it different, build it again from here.
   Changes buttons, so a Notes button means cloning `tabs` too and adding one
   that selects the panel (`layout.select`, `layout.show`). To toggle Notes
   like Files and Changes, clone `tabs`, point the layout's `tabs` block at the
-  clone and make these changes (written against Herdr 0.1.11; the clone doesn't
+  clone and make these changes (written against Herdr 0.1.11 and 0.1.12; the clone doesn't
   get Herdr's later updates):
 
   1. Put the block in the `panel-body` stack, after `changes`, instead of the

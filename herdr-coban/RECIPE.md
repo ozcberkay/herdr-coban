@@ -62,23 +62,28 @@ Left to right, top to bottom:
     props `{"part": "session", "block": "claude-session"}`).
   - `preview`: `layouts/herdr-coban.svg`.
 - **Mods**, in `mods/`:
-  - `coban-tabs`: Herdr's shipped `tabs` mod (Apache-2.0) with one more panel
-    button, `panelButton("tab-notes", "Notes", "mods/tab-notes/notes.svg")`,
-    and `"tab-notes"` added to the panels it remembers per space. Its `init`
-    shows the `claude-session` block once, so that block's mod starts.
+  - `coban-tabs`: a clone of Herdr 0.1.12's shipped `tabs` mod (Apache-2.0)
+    with one more panel button,
+    `panelButton("tab-notes", "Notes", "mods/tab-notes/notes.svg")`, and
+    `"tab-notes"` added to the panels it remembers per space. Its `init`
+    shows the `claude-session` block once, so that block's mod starts. Like
+    `tabs`, it opens the shipped `menu` and `new-menu` overlays and uses the
+    shipped icons `mods/workspace-chrome/spinner.svg`, `mods/pane/close.svg`,
+    `mods/files/file.svg` and `mods/changes/changes.svg`.
   - `tab-notes`, `machine-vitals`, `claude-status`: copies of the mods of the
     same name in this repository. Each has its own `RECIPE.md` there.
 - **Claude Code setting** for `claude-status`, in `~/.claude/settings.json`:
 
   ```json
   "statusLine": { "type": "command",
-    "command": "sh ~/.config/herdr-app/mods/claude-status/statusline.sh --hide-in-herdr <your earlier command>" }
+    "command": "sh ~/.config/herdr-app/mods/claude-status/statusline.sh --hide-in-herdr '<your earlier command>'" }
   ```
 
 ## Watch out
 
 - The mods run programs (`machine-vitals`: `iostat`, `vm_stat`, `sysctl`, `df`,
-  `pmset`, `ps`), write outside their folders (`~/.config/herdr-app/tab-notes/`,
+  `pmset`, `ps`; `open` on a click on the machine or limits panel;
+  `statusline.sh`: the person's status line command), write outside their folders (`~/.config/herdr-app/tab-notes/`,
   `~/.config/herdr-app/claude-status/`) and change `~/.claude/settings.json`.
   Tell the person before you install the layout.
 - `machine-vitals` works on macOS only.
@@ -87,8 +92,15 @@ Left to right, top to bottom:
 - A hidden block's mod starts only when the block first shows. That is why
   `coban-tabs` shows `claude-session` once at start; without it, the session
   panel can stay hidden after a restart.
-- The status line wrapper keeps the person's own status line as its argument.
-  Do not replace their command.
+- The status line wrapper keeps the person's own status line as one
+  single-quoted argument. Do not replace their command. `--hide-in-herdr`
+  empties the status line in Herdr terminals in every layout, also after a
+  switch back to the person's own layout.
+- `coban-tabs` is a frozen clone: it does not get Herdr's later changes to
+  `tabs`. If the tab bar breaks after a Herdr update, clone the new `tabs`
+  and make the same two changes again.
+- To uninstall, set the `statusLine` command back first, then delete the
+  files. Without `statusline.sh`, each Claude Code response shows an error.
 - The layout keeps Herdr's own look: no theme, fonts or colors of its own, so
   your settings decide them.
 

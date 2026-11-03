@@ -18,8 +18,10 @@ Only the `main` branch gets fixes. These parts need the most care:
 
 - `claude-status/mods/claude-status/statusline.sh` runs for each response of
   each Claude Code session and writes to `~/.config/herdr-app/claude-status/`.
-- The mods run programs (`iostat`, `vm_stat`, `sysctl`, `df`, `pmset`, `ps`)
-  and delete files that they wrote themselves.
+- `statusline.sh` also runs the person's own status line command with
+  `sh -c`.
+- The mods run programs (`iostat`, `vm_stat`, `sysctl`, `df`, `pmset`, `ps`,
+  and `open` on a click) and delete files that they wrote themselves.
 
 A problem in Herdr itself goes to
 [herdrdev/herdr-app](https://github.com/herdrdev/herdr-app).

@@ -1,5 +1,7 @@
-// Herdr's tab bar (the shipped tabs mod, Apache-2.0) with a Notes button next to
-// Files and Changes. Notes is the tab-notes block in the panel-body stack.
+// Herdr's tab bar: the shipped tabs mod of Herdr 0.1.12, Apache-2.0,
+// https://github.com/herdrdev/herdr-app. Changed: a Notes button next to Files
+// and Changes, "tab-notes" in the panels kept per space, and init shows the
+// claude-session block once. Notes is the tab-notes block in the panel-body stack.
 import { View, div, svg, image } from "gpui-kit";
 import { h_flex } from "gpui-base";
 import { spaces, panes, run, openOverlay, theme, window, shared, layout, settings } from "herdr";

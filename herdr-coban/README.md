@@ -23,7 +23,9 @@ Read ~/.config/herdr-app/AGENTS.md, then add this layout: https://github.com/ozc
 It copies `layouts/herdr-coban.json` and the folders in `mods/` into
 `~/.config/herdr-app/`, puts `statusline.sh` in front of your Claude Code
 status line and switches to the layout. Your own layout stays as it was:
-`ctrl-shift-l` switches back.
+`ctrl-shift-l` switches back. The Claude Code status line stays empty in
+Herdr terminals in every layout; see [Claude status](../claude-status/) to
+change that.
 
 ## What it changes on your computer
 
@@ -31,10 +33,22 @@ status line and switches to the layout. Your own layout stays as it was:
 - `~/.config/herdr-app/tab-notes/` and `~/.config/herdr-app/claude-status/`:
   the notes and the Claude Code data.
 - `~/.claude/settings.json`: the `statusLine` command gets the wrapper in
-  front. Your own status line command stays as its argument and still shows
-  outside Herdr.
+  front. Your own status line command stays as its quoted argument and still
+  shows outside Herdr.
 - It runs `iostat`, `vm_stat`, `sysctl`, `df`, `pmset` and `ps` for the
-  machine panel. Nothing goes to the network.
+  machine panel, and your own status line command for each Claude Code
+  response. A click on a sidebar panel opens Activity Monitor or
+  claude.ai in the browser (`open`). Nothing else goes to the network.
+
+## Uninstall
+
+1. In `~/.claude/settings.json`, set the `statusLine` command back to your
+   earlier command (the quoted argument), or remove `statusLine`. Do this
+   first: without `statusline.sh`, each Claude Code response shows an error.
+2. Switch to another layout (`ctrl-shift-l`).
+3. Delete `~/.config/herdr-app/layouts/herdr-coban.json`,
+   `layouts/herdr-coban.svg` and the four mod folders. Keep
+   `~/.config/herdr-app/tab-notes/` if you want your notes.
 
 ## The pieces
 
