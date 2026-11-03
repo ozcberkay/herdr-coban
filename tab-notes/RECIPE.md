@@ -95,7 +95,32 @@ want it different, build it again from here.
 
 - There's no tab-bar button. Herdr's `tabs` mod hard-codes its Files and
   Changes buttons, so a Notes button means cloning `tabs` too and adding one
-  that selects the panel (`layout.select`, `layout.show`).
+  that selects the panel (`layout.select`, `layout.show`). To toggle Notes
+  like Files and Changes, clone `tabs`, point the layout's `tabs` block at the
+  clone and make these changes (written against Herdr 0.1.11; the clone doesn't
+  get Herdr's later updates):
+
+  1. Put the block in the `panel-body` stack, after `changes`, instead of the
+     `work-body` row. It needs no `size`: the `panel` column sets the width.
+
+     ```json
+     { "id": "tab-notes", "type": "block", "content": { "mod": "tab-notes" } }
+     ```
+
+  2. In the clone's `main.js`, add the button after Changes:
+
+     ```js
+     .child(panelButton("tab-notes", "Notes", "mods/tab-notes/notes.svg"))
+     ```
+
+  3. Add the panel to `enabled` in the same file. `syncPanel` only restores a
+     space's panel when that list includes it, so without this, switching
+     spaces closes Notes. Don't add it to shared `workspace.panels`: the
+     welcome screen writes that list.
+
+     ```js
+     const enabled = [...(shared("workspace.panels") ?? ["files", "changes"]), "tab-notes"];
+     ```
 - Don't keep notes inside `mods/tab-notes/`: saving a file there reloads the
   mod, and updating the mod replaces the folder.
 - `readTextFile` reads up to 1 MiB. A note that grows past that can't be
