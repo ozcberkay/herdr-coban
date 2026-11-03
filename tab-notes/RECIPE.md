@@ -121,6 +121,10 @@ want it different, build it again from here.
      ```js
      const enabled = [...(shared("workspace.panels") ?? ["files", "changes"]), "tab-notes"];
      ```
+
+  The [Herdr Çoban](../herdr-coban/) layout in this repository does these
+  three steps. Its `mods/coban-tabs/` is a ready clone of `tabs` with the
+  Notes button.
 - Don't keep notes inside `mods/tab-notes/`: saving a file there reloads the
   mod, and updating the mod replaces the folder.
 - `readTextFile` reads up to 1 MiB. A note that grows past that can't be
