@@ -14,7 +14,7 @@ Issues and pull requests are welcome.
 ## Before you open a pull request
 
 1. If you changed a mod that the layout uses, run `scripts/sync-layout-mods.sh`.
-2. Run `node --test tests/*.test.mjs` (Node 20 or later).
+2. Run `node --test tests/*.test.mjs` (Node 22 or later).
 3. Copy the mod to `~/.config/herdr-app/mods/` and run
    `herdr-app check ~/.config/herdr-app/mods/<name>`. Try it in the app.
 4. Update the folder's `RECIPE.md` and `README.md` if what a person sees or

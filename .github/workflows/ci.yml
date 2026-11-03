@@ -18,6 +18,10 @@ jobs:
           node-version: 22
       - name: Unit tests
         run: node --test tests/*.test.mjs
+      - name: JavaScript syntax
+        run: |
+          find . -name '*.js' -not -path './.git/*' -print0 |
+            xargs -0 -n1 node --check
       - name: Layout copies match their mods
         run: sh scripts/sync-layout-mods.sh --check
       - name: JSON files parse
