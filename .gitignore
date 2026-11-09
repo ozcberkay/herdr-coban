@@ -1,3 +1,6 @@
 jsconfig.json
 *.d.ts
 .DS_Store
+
+# Claude Code local settings: may hold approved commands with inline secrets
+.claude/settings.local.json
